@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:5001",
+  baseURL: "https://chatmate-secure-private-messaging-hub.onrender.com",
 });
 
 API.interceptors.request.use((req) => {
