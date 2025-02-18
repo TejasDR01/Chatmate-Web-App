@@ -11,7 +11,7 @@ import io from "socket.io-client";
 import { getChats } from "./api/api.js";
 
 function ChatPage() {
-  const SOCKET_URL = "http://localhost:5001";
+  const SOCKET_URL = "https://chatmate-secure-private-messaging-hub.onrender.com";
   const localdata = localStorage.getItem("profile");
   const [message, setMessage] = useState(''); // State for the input message
   const [chatHistory, setChatHistory] = useState([]); // State to store chat history
