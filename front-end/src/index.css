@@ -1,0 +1,9 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+    /*background: linear-gradient( hsla(271, 94%, 86%, 0.777), #f1aaf0c9); /* Pink to yellow gradient */
+    overflow: hidden;
+    /* Prevent scrolling */
+}
