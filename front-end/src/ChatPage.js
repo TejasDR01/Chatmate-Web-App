@@ -40,8 +40,8 @@ function ChatPage() {
                 .on("recieve_message", (data) => {
                   if (data.error === "jwt expired") {
                     alert("Session expired !!");
-                    navigate("/auth");
                     localStorage.removeItem("profile");
+                    navigate("/");
                   } else if (!data.error) {
                     setChatHistory((prevchats) => [...prevchats, data]);
                     setTimeout(() => {
@@ -54,8 +54,8 @@ function ChatPage() {
                 .on("recieve_edit_message", (data) => {
                   if (data.error === "jwt expired") {
                     alert("Session expired !!");
-                    navigate("/auth");
                     localStorage.removeItem("profile");
+                    navigate("/");
                   } else if (!data.error) {
                     setChatHistory((prev) =>
                       prev.map((msg) =>
@@ -69,8 +69,8 @@ function ChatPage() {
                 .on("recieve_delete_message", (data) => {
                   if (data.error === "jwt expired") {
                     alert("Session expired !!");
-                    navigate("/auth");
                     localStorage.removeItem("profile");
+                    navigate("/");
                   } else if (!data.error) {
                     setChatHistory((prev) => prev.filter((msg) => msg._id !== data.id));
                   } else {
@@ -80,11 +80,11 @@ function ChatPage() {
             );
           } else if (Chats.status === 201) {
             if (Chats.data === "jwt expired") alert("Session expired !!");
-            navigate("/auth");
             localStorage.removeItem("profile");
+            navigate("/");
           }
         } else {
-          navigate("/auth");
+          navigate("/");
         }
       } catch (error) {
         alert("SERVER DOWN!");
@@ -92,7 +92,7 @@ function ChatPage() {
       }
     };
     fetchData();
-  }, []);
+  }, [localdata, navigate]);
 
   const handleChange = (e) => {
     setMessage(e.target.value);
@@ -167,9 +167,31 @@ function ChatPage() {
 
   const handleLogout = async (e) => {
     await socket.disconnect();
-    navigate("/auth");
+    navigate("/");
     localStorage.removeItem("profile");
   }
+
+  const renderAnimatedText = (text) => {
+    return text.split('').map((letter, index) => (
+      <motion.span
+        key={index}
+        initial={{ x: '-50%', opacity: 0 }}
+        animate={{ x: '0%', opacity: 1 }}
+        transition={{
+          delay: index * 0.2,
+          type: 'spring',
+          stiffness: 150,
+          damping: 7,
+        }}
+        style={{
+          display: 'inline-block',
+          textShadow: '0 0 5px rgba(41, 31, 0, 0.66)',
+        }}
+      >
+        {letter === ' ' ? '\u00A0' : letter}
+      </motion.span>
+    ));
+  };
 
   return (
     <Box
@@ -183,7 +205,9 @@ function ChatPage() {
       {/* App Bar */}
       <AppBar position="static" style={{ background: '#FF4081' }}>
         <Toolbar>
-          <Typography variant="h4" style={{ flexGrow: 1 }}>Chat-mate</Typography>
+          <Typography variant="h4" style={{ flexGrow: 1 }}>
+            {renderAnimatedText("Chat-mate")}
+          </Typography>
           {/* Logout Button */}
           <IconButton
             color="inherit"
@@ -272,23 +296,25 @@ function ChatPage() {
                 >
                   <motion.div
                     initial={{ opacity: 0, x: chat.Name === username ? 50 : -50 }}
-                    animate={{ opacity: 1, x: 0,
-                      transition: {duration: 0.5, type: 'spring', stiffness: 150, damping: 8}
+                    animate={{
+                      opacity: 1, x: 0,
+                      transition: { duration: 0.5, type: 'spring', stiffness: 150, damping: 8 }
                     }}
-                    variants= {{
-                      initial: {opacity: 1, x: 0},
-                      exit:{ scale: 0.5, opacity: 0, x: chat.Name === username ? -1000 : 1000,
+                    variants={{
+                      initial: { opacity: 1, x: 0 },
+                      exit: {
+                        scale: 0.5, opacity: 0, x: chat.Name === username ? -1000 : 1000,
                         transition: { duration: 0.5 }
                       }
                     }}
-                    exit = "exit"
+                    exit="exit"
                     style={{
                       maxWidth: '60%',
                       padding: '10px',
                       borderRadius: '10px',
                       background: chat.Name === username ? 'rgba(254, 153, 212, 0.56)' : 'rgba(254, 247, 190, 0.69)', // Different colors for sender and receiver
                       boxShadow: '0px 2px 5px rgba(0, 0, 0, 0.1)',
-                      whiteSpace: 'normal',
+                      whiteSpace: 'pre-line',
                     }}
                   >
                     {/* Chat Content */}

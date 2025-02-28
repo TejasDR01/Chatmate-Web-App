@@ -47,10 +47,17 @@ router.post("/signin", async (req, res) => {
 router.post("/signup", async (req, res) => {
   const { usrnm, email, pass, cpass } = req.body;
   try {
-    const data = await User.findOne({ email });
+    var data = await User.findOne({ username: usrnm });
     if (data !== null) {
-      res.status(201).json({ message: "Username or email already exists !!" });
-    } else {
+      res.status(201).json({ message: "Username not availaible !!" });
+      return;
+    }
+    data = await User.findOne({ email });
+    if (data !== null) {
+      res.status(201).json({ message: "Email address already registered !!" });
+      return;
+    }
+    else {
       const hashed_pass = await bcrypt.hash(pass, 12);
       const newUser = new User({
         username: usrnm,
